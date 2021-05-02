@@ -142,11 +142,13 @@ class LinkyCollector():
                                 stopbits=serial.STOPBITS_ONE,
                                 bytesize=serial.SEVENBITS,
                                 timeout=1)
+
             # Read Some Bytes
             line = ser.read(9600)
             if not any(key in line.decode() for key in INT_KEYS):
                 logging.error("Invalid Linky Frame !")
                 sys.exit(1)
+
             # Return Serial
             return ser
         except serial.serialutil.SerialException:

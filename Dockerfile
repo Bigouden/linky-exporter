@@ -9,7 +9,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN apk add --no-cache --update \
          python3 \
     && python3 -m venv ${VIRTUAL_ENV} \
-    && pip install --upgrade pip \
     && pip install --no-cache-dir --no-dependencies --no-binary :all: -r requirements.txt \
     && pip uninstall -y setuptools pip \
     && rm -rf \

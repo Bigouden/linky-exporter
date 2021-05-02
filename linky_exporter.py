@@ -129,6 +129,7 @@ class LinkyCollector():
         linky_frame = self.teleinfo()
         for key, value in linky_frame.items():
             description = [i['description'] for i in LINKY_FRAME if key == i['name']][0]
+            key = "linky_%s" % key.lower()
             metric = Metric(key, description, 'counter')
             metric.add_sample(key, value=value, labels={'service': LINKY_EXPORTER_NAME})
             yield metric

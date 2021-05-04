@@ -34,13 +34,13 @@ except ValueError:
 LINKY_FRAME = [
     {'name': 'ADCO', 'value': '000000000000', 'description': 'Adresse du Compteur'},
     {'name': 'OPTARIF', 'value': 'HC..', 'description': 'Option Tarifaire Choisie'},
-    {'name': 'ISOUSC', 'value': '12', 'description': 'Intensité Souscrite en A'},
-    {'name': 'BASE', 'value': '123456789', 'description': 'Index Option Base en Wh'},
-    {'name': 'HCHC', 'value': '123456789', 'description': 'Index Heure Creuse en Wh'},
-    {'name': 'HCHP', 'value': '123456789', 'description': 'Index Heure Pleine en Wh'},
+    {'name': 'ISOUSC', 'value': '12', 'description': 'Intensité Souscrite en A', 'type': 'counter'},
+    {'name': 'BASE', 'value': '123456789', 'description': 'Index Option Base en Wh', 'type': 'counter'},
+    {'name': 'HCHC', 'value': '123456789', 'description': 'Index Heure Creuse en Wh', 'type': 'counter'},
+    {'name': 'HCHP', 'value': '123456789', 'description': 'Index Heure Pleine en Wh', 'type': 'counter'},
     {'name': 'PTEC', 'value': 'HP..', 'description': 'Période Tarifaire En Cours'},
-    {'name': 'IINST', 'value': '123', 'description': 'Intensité Instantanée en A'},
-    {'name': 'IMAX', 'value': '123', 'description': 'Intensité Maximale Appelée en A'},
+    {'name': 'IINST', 'value': '123', 'description': 'Intensité Instantanée en A', 'type': 'gauge'},
+    {'name': 'IMAX', 'value': '123', 'description': 'Intensité Maximale Appelée en A', 'type': 'counter'},
     {'name': 'PAPP', 'value': '12345', 'description': 'Puissance Apparente en VA'},
     {'name': 'HHPHC', 'value': 'A', 'description': 'Horaire Heures Pleines Heures Creuses'},
     {'name': 'MOTDETAT', 'value': '000000', 'description': 'Mot d\'État du compteur'}
@@ -129,8 +129,9 @@ class LinkyCollector():
         linky_frame = self.teleinfo()
         for key, value in linky_frame.items():
             description = [i['description'] for i in LINKY_FRAME if key == i['name']][0]
+            metric_type = [i['type'] for i in LINKY_FRAME if key == i['name']][0]
             key = "linky_%s" % key.lower()
-            metric = Metric(key, description, 'counter')
+            metric = Metric(key, description, metric_type)
             metric.add_sample(key, value=value, labels={'service': LINKY_EXPORTER_NAME})
             yield metric
 

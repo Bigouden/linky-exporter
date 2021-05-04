@@ -18,4 +18,5 @@ RUN apk add --no-cache --update \
     && chmod +x /entrypoint.sh
 COPY linky_exporter.py ${VIRTUAL_ENV}
 WORKDIR ${VIRTUAL_ENV}
+HEALTHCHECK CMD nc -vz localhost ${LINKY_EXPORTER_PORT} || exit 1
 ENTRYPOINT ["/entrypoint.sh"]

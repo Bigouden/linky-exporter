@@ -32,25 +32,24 @@ except ValueError:
 # Linky Frame Example:
 # https://www.enedis.fr/sites/default/files/Enedis-NOI-CPT_54E.pdf
 LINKY_FRAME = [
-    {'name': 'ADCO', 'value': '000000000000', 'description': 'Adresse du Compteur'},
-    {'name': 'OPTARIF', 'value': 'HC..', 'description': 'Option Tarifaire Choisie'},
-    {'name': 'ISOUSC', 'value': '12', 'description': 'Intensité Souscrite en A', 'type': 'counter'},
-    {'name': 'BASE', 'value': '123456789', 'description': 'Index Option Base en Wh', 'type': 'counter'},
-    {'name': 'HCHC', 'value': '123456789', 'description': 'Index Heure Creuse en Wh', 'type': 'counter'},
-    {'name': 'HCHP', 'value': '123456789', 'description': 'Index Heure Pleine en Wh', 'type': 'counter'},
-    {'name': 'PTEC', 'value': 'HP..', 'description': 'Période Tarifaire En Cours'},
-    {'name': 'IINST', 'value': '123', 'description': 'Intensité Instantanée en A', 'type': 'gauge'},
-    {'name': 'IMAX', 'value': '123', 'description': 'Intensité Maximale Appelée en A', 'type': 'counter'},
-    {'name': 'PAPP', 'value': '12345', 'description': 'Puissance Apparente en VA'},
-    {'name': 'HHPHC', 'value': 'A', 'description': 'Horaire Heures Pleines Heures Creuses'},
-    {'name': 'MOTDETAT', 'value': '000000', 'description': 'Mot d\'État du compteur'}
+    {'name': 'ADCO', 'description': 'Adresse du Compteur', 'type': 'constant'},
+    {'name': 'OPTARIF', 'description': 'Option Tarifaire Choisie', 'type': 'string'},
+    {'name': 'ISOUSC', 'description': 'Intensité Souscrite en A', 'type': 'gauge'},
+    {'name': 'BASE', 'description': 'Index Option Base en Wh', 'type': 'counter'},
+    {'name': 'HCHC', 'description': 'Index Heure Creuse en Wh', 'type': 'counter'},
+    {'name': 'HCHP', 'description': 'Index Heure Pleine en Wh', 'type': 'counter'},
+    {'name': 'PTEC', 'description': 'Période Tarifaire En Cours', 'type': 'string'},
+    {'name': 'IINST', 'description': 'Intensité Instantanée en A', 'type': 'gauge'},
+    {'name': 'IMAX', 'description': 'Intensité Maximale Appelée en A', 'type': 'constant'},
+    {'name': 'PAPP', 'description': 'Puissance Apparente en VA', 'type': 'gauge'},
+    {'name': 'HHPHC', 'description': 'Horaire Heures Pleines Heures Creuses', 'type': 'unknown'},
+    {'name': 'MOTDETAT', 'description': 'Mot d\'État du compteur', 'type': 'unknown'}
 ]
+
 LINKY_MODE = [
     {'name': 'HISTORIQUE', 'baudrate': '1200'},
     {'name': 'STANDARD', 'baudrate': '9600'}
 ]
-
-INT_KEYS = ['ADCO', 'ISOUSC', 'BASE', 'IINST', 'IMAX', 'PAPP']
 
 try:
     LINKY_EXPORTER_PORT = int(os.environ.get('LINKY_EXPORTER_PORT', '8123'))
@@ -115,8 +114,8 @@ class LinkyCollector():
                     continue
 
                 # Forge Linky Frame Dict
-                if tag in INT_KEYS:
-                    linky_frame[tag] = int(data)
+                if tag in [i['name'] for i in LINKY_FRAME]:
+                    linky_frame[tag] = data
 
                 # End of Linky Frame (End with 0x03)
                 if b'\x03\x02' in line:
@@ -127,13 +126,25 @@ class LinkyCollector():
     def collect(self):
         '''Collect Prometheus Metrics'''
         linky_frame = self.teleinfo()
+        labels = {'job': LINKY_EXPORTER_NAME}
+        metrics = []
+        # Filter Metrics & Labels
         for key, value in linky_frame.items():
             description = [i['description'] for i in LINKY_FRAME if key == i['name']][0]
             metric_type = [i['type'] for i in LINKY_FRAME if key == i['name']][0]
-            key = "linky_%s" % key.lower()
-            metric = Metric(key, description, metric_type)
-            metric.add_sample(key, value=value, labels={'service': LINKY_EXPORTER_NAME})
-            yield metric
+            if metric_type in ['counter', 'gauge', 'histogram', 'summary']:
+                metrics.append({'name': 'linky_%s' % key,
+                                'value': int(value),
+                                'description': description,
+                                'type': metric_type})
+            else:
+                labels[key] = value
+
+        # Return Prometheus Metrics
+        for metric in metrics:
+            prometheus_metric = Metric(metric['name'], metric['description'], metric['type'])
+            prometheus_metric.add_sample(metric['name'], value=metric['value'], labels=labels)
+            yield prometheus_metric
 
     def _check_for_valid_frame(self):
         '''Check For Valid Frame And Return Serial Object'''
@@ -147,7 +158,7 @@ class LinkyCollector():
 
             # Read Some Bytes
             line = ser.read(9600)
-            if not any(key in line.decode() for key in INT_KEYS):
+            if not any(tag in line.decode() for tag in [i['name'] for i in LINKY_FRAME]):
                 logging.error("Invalid Linky Frame !")
                 sys.exit(1)
 

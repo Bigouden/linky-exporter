@@ -20,6 +20,21 @@ Les métriques remontées par l'exporter sont toutes préfixées par la chaine d
 
 Par exemple, l'index de base est disponible à travers la métrique : **linky_base**.
 
+```
+# HELP linky_isousc Intensité Souscrite en A
+# TYPE linky_isousc gauge
+linky_isousc{adco="xxxxxxxxxxx",hhphc="A",imax="090",job="linky-exporter",motdetat="000000",optarif="BASE",ptec="TH.."} 30.0
+# HELP linky_base_total Index Option Base en Wh
+# TYPE linky_base_total counter
+linky_base{adco="xxxxxxxxxxx",hhphc="A",imax="090",job="linky-exporter",motdetat="000000",optarif="BASE",ptec="TH.."} 2.35478e+06
+# HELP linky_iinst Intensité Instantanée en A
+# TYPE linky_iinst gauge
+linky_iinst{adco="xxxxxxxxxxx",hhphc="A",imax="090",job="linky-exporter",motdetat="000000",optarif="BASE",ptec="TH.."} 11.0
+# HELP linky_papp Puissance Apparente en VA
+# TYPE linky_papp gauge
+linky_papp{adco="xxxxxxxxxxx",hhphc="A",imax="090",job="linky-exporter",motdetat="000000",optarif="BASE",ptec="TH.."} 2610.0
+````
+
 ## Lancement de l'exporter
 
 L'exporter est "packagé" sous forme de conteneur Docker. 

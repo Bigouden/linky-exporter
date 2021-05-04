@@ -138,7 +138,7 @@ class LinkyCollector():
                                 'description': description,
                                 'type': metric_type})
             else:
-                labels[key] = value
+                labels[key.lower()] = value
 
         # Return Prometheus Metrics
         for metric in metrics:

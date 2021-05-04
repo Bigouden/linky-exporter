@@ -26,7 +26,7 @@ L'exporter est "packagé" sous forme de conteneur Docker.
 
 Une fois le conteneur construit, il peut être lancé comme suit :
 
-`docker run -dit --device=/dev/ttyUSB0 -v /dev/ttyUSB0:/dev/ttyUSB0 linky-exporter `
+`docker run -dit --device=/dev/ttyUSB0 -v /dev/ttyUSB0:/dev/ttyUSB0 -p 8123:8123 linky-exporter `
 
 ## Tableau de bord Grafana
 

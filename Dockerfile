@@ -2,6 +2,7 @@ FROM alpine:3.13
 LABEL maintainer="Thomas GUIRRIEC <thomas@guirriec.fr>"
 ENV LINKY_EXPORTER_PORT=8123
 ENV LINKY_EXPORTER_LOGLEVEL='INFO'
+ENV LINKY_EXPORTER_NAME='linky-exporter'
 COPY requirements.txt /
 COPY entrypoint.sh /
 ENV VIRTUAL_ENV="/linky-exporter"

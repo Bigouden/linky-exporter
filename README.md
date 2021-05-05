@@ -2,7 +2,7 @@
 
 ## Description
 
-Exporter Prometheus des trames remontées au travers d'un module téléinfo raccordé sur un compteur Linky.
+Exporter Prometheus des trames remontées à partir d'un module téléinfo raccordé sur un compteur Linky.
 
 ## Variable d'environement
 

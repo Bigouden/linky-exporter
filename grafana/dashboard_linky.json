@@ -1,60 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    },
-    {
-      "name": "VAR_SUBSCRIPTION_PRICE",
-      "type": "constant",
-      "label": "subscription_price",
-      "value": "10.60",
-      "description": ""
-    },
-    {
-      "name": "VAR_UNIT_PRICE",
-      "type": "constant",
-      "label": "unit_price",
-      "value": "0.1582",
-      "description": ""
-    }
-  ],
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "7.5.4"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -71,13 +15,12 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 1620131067400,
+  "iteration": 1624282570253,
   "links": [],
   "panels": [
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -86,12 +29,12 @@
           },
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": ""
+              "options": {
+                "": {
+                  "text": "N/A"
+                }
+              },
+              "type": "value"
             }
           ],
           "thresholds": {
@@ -132,7 +75,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -151,7 +94,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -160,12 +103,13 @@
           },
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
           "thresholds": {
@@ -206,7 +150,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -225,7 +169,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -234,12 +178,13 @@
           },
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
           "thresholds": {
@@ -280,7 +225,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -298,7 +243,7 @@
       "type": "stat"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -347,7 +292,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -363,7 +308,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -412,7 +357,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -429,7 +374,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -439,12 +384,12 @@
           "decimals": 6,
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": ""
+              "options": {
+                "": {
+                  "text": "N/A"
+                }
+              },
+              "type": "value"
             }
           ],
           "thresholds": {
@@ -485,7 +430,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -504,7 +449,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -515,12 +460,13 @@
           "decimals": 2,
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
           "thresholds": {
@@ -561,7 +507,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -580,7 +526,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -591,12 +537,13 @@
           "decimals": 2,
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
           "thresholds": {
@@ -637,7 +584,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -656,7 +603,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -667,12 +614,13 @@
           "decimals": 2,
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
           "thresholds": {
@@ -713,7 +661,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -735,7 +683,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -769,7 +717,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -842,7 +790,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -876,7 +824,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -949,7 +897,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "decimals": 6,
       "description": "",
       "fieldConfig": {
@@ -984,7 +932,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1049,7 +997,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1059,12 +1007,13 @@
           "decimals": 4,
           "mappings": [
             {
-              "$$hashKey": "object:649",
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
           "thresholds": {
@@ -1105,7 +1054,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.4",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -1124,7 +1073,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 27,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1135,21 +1084,9 @@
         "hide": 2,
         "label": null,
         "name": "subscription_price",
-        "query": "${VAR_SUBSCRIPTION_PRICE}",
+        "query": "10.596666667",
         "skipUrlSync": false,
-        "type": "constant",
-        "current": {
-          "value": "${VAR_SUBSCRIPTION_PRICE}",
-          "text": "${VAR_SUBSCRIPTION_PRICE}",
-          "selected": false
-        },
-        "options": [
-          {
-            "value": "${VAR_SUBSCRIPTION_PRICE}",
-            "text": "${VAR_SUBSCRIPTION_PRICE}",
-            "selected": false
-          }
-        ]
+        "type": "constant"
       },
       {
         "description": "Prix du KWh",
@@ -1157,26 +1094,18 @@
         "hide": 2,
         "label": null,
         "name": "unit_price",
-        "query": "${VAR_UNIT_PRICE}",
+        "query": "0.1582",
         "skipUrlSync": false,
-        "type": "constant",
-        "current": {
-          "value": "${VAR_UNIT_PRICE}",
-          "text": "${VAR_UNIT_PRICE}",
-          "selected": false
-        },
-        "options": [
-          {
-            "value": "${VAR_UNIT_PRICE}",
-            "text": "${VAR_UNIT_PRICE}",
-            "selected": false
-          }
-        ]
+        "type": "constant"
       },
       {
         "allValue": null,
-        "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "current": {
+          "selected": false,
+          "text": "061764283949",
+          "value": "061764283949"
+        },
+        "datasource": null,
         "definition": "linky_papp",
         "description": "Adresse du compteur Linky",
         "error": null,
@@ -1195,15 +1124,18 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
         "allValue": null,
-        "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "current": {
+          "selected": false,
+          "text": "BASE",
+          "value": "BASE"
+        },
+        "datasource": null,
         "definition": "linky_papp",
         "description": null,
         "error": null,
@@ -1222,7 +1154,6 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -1230,12 +1161,12 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Linky",
   "uid": "Sv6Xn_9Gz",
-  "version": 34
+  "version": 1
 }

@@ -2,6 +2,9 @@ include:
   - project: 'Bigouden/gitlab-ci-templates'
     file: '.gitlab-ci-docker.yml'
 
+variables:
+  CONTAINER_CLIENT_IMAGE: alpine:latest
+
 stages:
   - Quality
   - Build

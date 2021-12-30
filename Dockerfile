@@ -1,4 +1,4 @@
-FROM alpine:3.13
+FROM alpine:3.15
 LABEL maintainer="Thomas GUIRRIEC <thomas@guirriec.fr>"
 ENV LINKY_EXPORTER_PORT=8123
 ENV LINKY_EXPORTER_LOGLEVEL='INFO'

@@ -133,7 +133,7 @@ class LinkyCollector():
             description = [i['description'] for i in LINKY_FRAME if key == i['name']][0]
             metric_type = [i['type'] for i in LINKY_FRAME if key == i['name']][0]
             if metric_type in ['counter', 'gauge', 'histogram', 'summary']:
-                metrics.append({'name': 'linky_%s' % key.lower(),
+                metrics.append({'name': f'linky_{key.lower()}',
                                 'value': int(value),
                                 'description': description,
                                 'type': metric_type})

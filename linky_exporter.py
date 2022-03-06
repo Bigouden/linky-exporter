@@ -154,6 +154,8 @@ class LinkyCollector():
                                 parity=serial.PARITY_EVEN,
                                 stopbits=serial.STOPBITS_ONE,
                                 bytesize=serial.SEVENBITS,
+                                dsrdtr=True,
+                                rtscts=True,
                                 timeout=1)
 
             # Read Some Bytes
@@ -164,13 +166,21 @@ class LinkyCollector():
 
             # Return Serial
             return ser
+        except BrokenPipeError:
+            logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
+            sys.exit(1)
         except serial.serialutil.SerialException:
             logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
             sys.exit(1)
 
     def _wait_for_new_frame(self):
         line = self.ser.readline()
+        frame_timeout = 10
+        frame_timeout_start = time.time()
         while b'\x02' not in line:
+            if time.time() > frame_timeout_start + frame_timeout:
+                logging.error("No Linky Frame Received !")
+                sys.exit(1)
             logging.debug("Wait For New Linky Frame")
             line = self.ser.readline()
         # Start of Linky Frame

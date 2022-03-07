@@ -177,6 +177,7 @@ class LinkyCollector():
         while b'\x02' not in line:
             if time.time() > frame_timeout_start + frame_timeout:
                 logging.error("No Linky Frame Received !")
+                self.ser.close()
                 sys.exit(1)
             logging.debug("Wait For New Linky Frame")
             line = self.ser.readline()

@@ -80,10 +80,7 @@ class LinkyCollector():
 
         with self.ser:
             # Wait For New Linky Frame (Start with 0x02)
-            try:
-                self._wait_for_new_frame()
-            except BrokenPipeError:
-                sys.exit(1)
+            self._wait_for_new_frame()
 
             # Linky Frame Start
             linky_frame = {}
@@ -175,7 +172,7 @@ class LinkyCollector():
 
     def _wait_for_new_frame(self):
         line = self.ser.readline()
-        frame_timeout = 10
+        frame_timeout = 5
         frame_timeout_start = time.time()
         while b'\x02' not in line:
             if time.time() > frame_timeout_start + frame_timeout:

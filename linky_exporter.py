@@ -166,9 +166,6 @@ class LinkyCollector():
 
             # Return Serial
             return ser
-        except BrokenPipeError:
-            logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
-            sys.exit(1)
         except serial.serialutil.SerialException:
             logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
             sys.exit(1)
@@ -180,7 +177,7 @@ class LinkyCollector():
         while b'\x02' not in line:
             if time.time() > frame_timeout_start + frame_timeout:
                 logging.error("No Linky Frame Received !")
-                sys.exit(1)
+                raise SystemExit
             logging.debug("Wait For New Linky Frame")
             line = self.ser.readline()
         # Start of Linky Frame

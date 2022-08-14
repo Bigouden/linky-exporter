@@ -10,13 +10,4 @@ stages:
   - Build
   - Inspect
   - Release
-
-Pylint:
-  stage: Quality
-  image: $CONTAINER_CLIENT_IMAGE
-  before_script:
-    - apk add --no-cache --update git py3-pip
-    - pip install pylint
-  script:
-    - pylint linky_exporter.py
-  retry: 2
+  - Clean

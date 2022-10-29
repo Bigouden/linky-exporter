@@ -4,6 +4,7 @@ include:
 
 stages:
   - Quality
+  - Security
   - Build
   - Inspect
   - Release

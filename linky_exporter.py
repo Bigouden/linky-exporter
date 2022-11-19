@@ -7,27 +7,42 @@ import logging
 import os
 import sys
 import time
+from datetime import datetime
 import serial
+import pytz
 from prometheus_client.core import REGISTRY, Metric
 from prometheus_client import start_http_server, PROCESS_COLLECTOR, PLATFORM_COLLECTOR
 
 LINKY_EXPORTER_INTERFACE = os.environ.get('LINKY_EXPORTER_INTERFACE', '/dev/ttyUSB0')
 LINKY_EXPORTER_LOGLEVEL = os.environ.get('LINKY_EXPORTER_LOGLEVEL', 'INFO').upper()
 LINKY_EXPORTER_NAME = os.environ.get('LINKY_EXPORTER_NAME', 'linky-exporter')
+LINKY_EXPORTER_TZ = os.environ.get('TZ', 'Europe/Paris')
 
 # Logging Configuration
 try:
+    pytz.timezone(LINKY_EXPORTER_TZ)
+    logging.Formatter.converter = lambda *args: \
+                                  datetime.now(tz=pytz.timezone(LINKY_EXPORTER_TZ)).timetuple()
     logging.basicConfig(stream=sys.stdout,
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%d/%m/%Y %H:%M:%S',
                         level=LINKY_EXPORTER_LOGLEVEL)
+except pytz.exceptions.UnknownTimeZoneError:
+    logging.Formatter.converter = lambda *args: \
+                                  datetime.now(tz=pytz.timezone('Europe/Paris')).timetuple()
+    logging.basicConfig(stream=sys.stdout,
+                        format='%(asctime)s - %(levelname)s - %(message)s',
+                        datefmt='%d/%m/%Y %H:%M:%S',
+                        level='INFO')
+    logging.error("TZ invalid : %s !", LINKY_EXPORTER_TZ)
+    os._exit(1)
 except ValueError:
     logging.basicConfig(stream=sys.stdout,
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%d/%m/%Y %H:%M:%S',
                         level='INFO')
     logging.error("LINKY_EXPORTER_LOGLEVEL invalid !")
-    sys.exit(1)
+    os._exit(1)
 
 # Linky Frame Example:
 # https://www.enedis.fr/sites/default/files/Enedis-NOI-CPT_54E.pdf
@@ -55,13 +70,13 @@ try:
     LINKY_EXPORTER_PORT = int(os.environ.get('LINKY_EXPORTER_PORT', '8123'))
 except ValueError:
     logging.error("LINKY_EXPORTER_PORT must be int !")
-    sys.exit(1)
+    os._exit(1)
 
 LINKY_EXPORTER_MODE = os.environ.get('LINKY_EXPORTER_MODE', 'HISTORIQUE')
 VALID_MODE = [i['name'] for i in LINKY_MODE]
 if not LINKY_EXPORTER_MODE in VALID_MODE:
     logging.error("LINKY_EXPORTER_MODE must be : %s", ' or '.join(VALID_MODE))
-    sys.exit(1)
+    os._exit(1)
 
 # REGISTRY Configuration
 REGISTRY.unregister(PROCESS_COLLECTOR)
@@ -162,13 +177,13 @@ class LinkyCollector():
             line = ser.read(9600)
             if not any(tag in line.decode() for tag in [i['name'] for i in LINKY_FRAME]):
                 logging.error("Invalid Linky Frame !")
-                sys.exit(1)
+                os._exit(1)
 
             # Return Serial
             return ser
         except serial.serialutil.SerialException:
             logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
-            sys.exit(1)
+            os._exit(1)
 
     def _wait_for_new_frame(self):
         line = self.ser.readline()

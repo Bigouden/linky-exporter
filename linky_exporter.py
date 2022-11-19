@@ -184,6 +184,7 @@ class LinkyCollector():
         except serial.serialutil.SerialException:
             logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
             os._exit(1)
+            return None
 
     def _wait_for_new_frame(self):
         line = self.ser.readline()

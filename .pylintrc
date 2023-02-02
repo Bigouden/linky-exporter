@@ -1,2 +1,2 @@
 [MESSAGES CONTROL]
-disable=import-error,protected-access,unused-variable
+disable=import-error,protected-access,unused-variable,inconsistent-return-statements

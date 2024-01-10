@@ -6,13 +6,16 @@ Exporter Prometheus des trames remontées à partir d'un module téléinfo racco
 
 ## Variable d'environement
 
-| Variable d'environement  | Description                          | Valeur par défaut |
-|--------------------------|--------------------------------------|-------------------|
-| LINKY_EXPORTER_INTERFACE | Interface d'accès au compteur Linky  | /dev/ttyUSB0      |
-| LINKY_EXPORTER_LOGLEVEL  | Niveau de verbosité de l'exporter    | INFO              |
-| LINKY_EXPORTER_NAME      | Valeur 'job' des métriques remontées | linky-exporter    |
-| LINKY_EXPORTER_PORT      | Port d'écoute de l'exporter          | 8123              |
-| LINKY_EXPORTER_MODE      | Mode HISTORIQUE ou STANDARD          | HISTORIQUE        |
+| Variable d'environement  | Description                                      | Valeur par défaut |
+|--------------------------|--------------------------------------------------|-------------------|
+| LINKY_EXPORTER_INTERFACE | Interface d'accès au compteur Linky              | /dev/ttyUSB0      |
+| LINKY_EXPORTER_LOGLEVEL  | Niveau de verbosité de l'exporter                | INFO              |
+| LINKY_EXPORTER_NAME      | Valeur 'job' des métriques remontées             | linky-exporter    |
+| LINKY_EXPORTER_PORT      | Port d'écoute de l'exporter                      | 8123              |
+| LINKY_EXPORTER_MODE      | Mode HISTORIQUE ou STANDARD                      | HISTORIQUE        |
+| LINKY_FRAME_TIMEOUT      | Durée d'attente d'une trame Linky                | 10                |
+| LINKY_SOCAT_HOST         | Mode SOCAT : IP:PORT associé à l'interface Linky |                   |
+| LINKY_SOCAT_FILE         | Mode SOCAT : Fichier associé à LINKY_SOCAT_HOST  |                   |
 
 ## Format des métriques
 

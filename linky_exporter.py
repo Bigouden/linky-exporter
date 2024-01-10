@@ -8,18 +8,80 @@
 import logging
 import os
 import sys
+import threading
 import time
 from datetime import datetime
+from typing import Callable
+from wsgiref.simple_server import make_server
 
 import pytz
 import serial
-from prometheus_client import PLATFORM_COLLECTOR, PROCESS_COLLECTOR, start_http_server
-from prometheus_client.core import REGISTRY, Metric
+from prometheus_client import PLATFORM_COLLECTOR, PROCESS_COLLECTOR
+from prometheus_client.core import REGISTRY, CollectorRegistry, Metric
+from prometheus_client.exposition import _bake_output, _SilentHandler, parse_qs
 
 LINKY_EXPORTER_INTERFACE = os.environ.get("LINKY_EXPORTER_INTERFACE", "/dev/ttyUSB0")
 LINKY_EXPORTER_LOGLEVEL = os.environ.get("LINKY_EXPORTER_LOGLEVEL", "INFO").upper()
 LINKY_EXPORTER_NAME = os.environ.get("LINKY_EXPORTER_NAME", "linky-exporter")
 LINKY_EXPORTER_TZ = os.environ.get("TZ", "Europe/Paris")
+
+
+def make_wsgi_app(
+    registry: CollectorRegistry = REGISTRY, disable_compression: bool = False
+) -> Callable:
+    """Create a WSGI app which serves the metrics from a registry."""
+
+    def prometheus_app(environ, start_response):
+        # Prepare parameters
+        accept_header = environ.get("HTTP_ACCEPT")
+        accept_encoding_header = environ.get("HTTP_ACCEPT_ENCODING")
+        params = parse_qs(environ.get("QUERY_STRING", ""))
+        headers = [
+            ("Server", ""),
+            ("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0"),
+            ("Pragma", "no-cache"),
+            ("Expires", "0"),
+            ("X-Content-Type-Options", "nosniff"),
+        ]
+        if environ["PATH_INFO"] == "/":
+            status = "301 Moved Permanently"
+            headers.append(("Location", "/metrics"))
+            output = b""
+        elif environ["PATH_INFO"] == "/favicon.ico":
+            status = "200 OK"
+            output = b""
+        elif environ["PATH_INFO"] == "/metrics":
+            status, tmp_headers, output = _bake_output(
+                registry,
+                accept_header,
+                accept_encoding_header,
+                params,
+                disable_compression,
+            )
+            headers += tmp_headers
+        else:
+            status = "404 Not Found"
+            output = b""
+        start_response(status, headers)
+        return [output]
+
+    return prometheus_app
+
+
+def start_wsgi_server(
+    port: int,
+    addr: str = "0.0.0.0",  # nosec B104
+    registry: CollectorRegistry = REGISTRY,
+) -> None:
+    """Starts a WSGI server for prometheus metrics as a daemon thread."""
+    app = make_wsgi_app(registry)
+    httpd = make_server(addr, port, app, handler_class=_SilentHandler)
+    thread = threading.Thread(target=httpd.serve_forever)
+    thread.daemon = True
+    thread.start()
+
+
+start_http_server = start_wsgi_server
 
 # Logging Configuration
 try:
@@ -131,6 +193,12 @@ except ValueError:
     logging.error("LINKY_EXPORTER_PORT must be int !")
     os._exit(1)
 
+try:
+    LINKY_FRAME_TIMEOUT = int(os.environ.get("LINKY_FRAME_TIMEOUT", "10"))
+except ValueError:
+    logging.error("LINKY_FRAME_TIMEOUT must be int !")
+    os._exit(1)
+
 LINKY_EXPORTER_MODE = os.environ.get("LINKY_EXPORTER_MODE", "HISTORIQUE")
 VALID_MODE = [i["name"] for i in LINKY_MODE]
 if LINKY_EXPORTER_MODE not in VALID_MODE:
@@ -169,7 +237,7 @@ class LinkyCollector:
                     arr[2] = " "
                 # Skip Line if Invalid Format (Tag, Data, Checksum)
                 elif len(arr) != 3:
-                    logging.error("Invalid Format (line: %s)", line.decode())
+                    logging.error("Invalid Format (line: %s)", line.decode().strip())
                     self._wait_for_new_frame()
                     linky_frame = {}
                     continue
@@ -184,7 +252,7 @@ class LinkyCollector:
 
                 # Verify Checksum
                 if not self._verify_checksum(tag, data, checksum):
-                    logging.error("Invalid Checksum (line: %s)", line.decode())
+                    logging.error("Invalid Checksum (line: %s)", line.decode().strip())
                     self._wait_for_new_frame()
                     linky_frame = {}
                     continue
@@ -245,25 +313,26 @@ class LinkyCollector:
             )
 
             # Read Some Bytes
-            line = ser.read(9600)
-            if not any(
-                tag in line.decode() for tag in [i["name"] for i in LINKY_FRAME]
-            ):
-                logging.error("Invalid Linky Frame !")
-                os._exit(1)
-
-            # Return Serial
-            return ser
+            init = datetime.now()
+            while True:
+                if (datetime.now() - init).total_seconds() >= LINKY_FRAME_TIMEOUT:
+                    logging.error("Invalid Linky Frame !")
+                    os._exit(1)
+                line = ser.readline()
+                if any(
+                    tag in line for tag in [i["name"].encode() for i in LINKY_FRAME]
+                ):
+                    # Return Serial
+                    return ser
         except serial.serialutil.SerialException:
             logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
             os._exit(1)
 
     def _wait_for_new_frame(self):
         line = self.ser.readline()
-        frame_timeout = 5
-        frame_timeout_start = time.time()
+        init = datetime.now()
         while b"\x02" not in line:
-            if time.time() > frame_timeout_start + frame_timeout:
+            if (datetime.now() - init).total_seconds() >= LINKY_FRAME_TIMEOUT:
                 logging.error("No Linky Frame Received !")
                 os._exit(1)
             logging.debug("Wait For New Linky Frame")

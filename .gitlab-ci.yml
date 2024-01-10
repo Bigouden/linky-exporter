@@ -2,11 +2,51 @@
 include:
   - project: "Bigouden/gitlab-ci-templates"
     file: ".gitlab-ci-docker.yml"
+  - project: "Bigouden/gitlab-ci-templates"
+    file: ".gitlab-ci-prometheus.yml"
+
+.services:
+  services:
+    - name: $CONTAINER_TEST_IMAGE
+      alias: exporter
+  before_script:
+    - apk add --no-cache --update curl bind-tools
+    # Bypass for curl & c-ares
+    - echo "$(host -t A exporter | awk '/has address/ { print $4 }') exporter" >> /etc/hosts
+  variables:
+    GIT_STRATEGY: none
+    LINKY_SOCAT_HOST: ${LINKY_SOCAT_HOST}
+    LINKY_SOCAT_FILE: "/tmp/linky"
+    LINKY_EXPORTER_INTERFACE: "/tmp/linky"
+  image: $CONTAINER_CLIENT_IMAGE
+  dependencies: []
+
+.services_owasp_zap:
+  services:
+    - name: $CONTAINER_TEST_IMAGE
+      alias: target
+      variables:
+        LINKY_SOCAT_FILE: "/tmp/linky"
+        LINKY_EXPORTER_INTERFACE: "/tmp/linky"
+  image:
+    name: $CONTAINER_OWASP_ZAP_IMAGE
+    entrypoint: [""]
+  variables:
+    GIT_STRATEGY: none
+    LINKY_SOCAT_HOST: ${LINKY_SOCAT_HOST}
+  dependencies: []
+
+variables:
+  PROMETHEUS_EXPORTER_PORT: "8123"
+  PROMETHEUS_EXPORTER_SCHEME: "http"
+  CI_DEBUG_SERVICES: "true"
+  FF_NETWORK_PER_BUILD: 1
 
 stages:
   - Quality
   - Security
   - Build
+  - Test
   - Inspect
   - Release
   - Clean

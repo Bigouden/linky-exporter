@@ -34,5 +34,6 @@ COPY --link --chmod=755 ${SCRIPT} ${VIRTUAL_ENV}
 COPY --link --chmod=755 entrypoint.sh /
 USER ${USERNAME}
 WORKDIR ${VIRTUAL_ENV}
+EXPOSE ${LINKY_EXPORTER_PORT}
 HEALTHCHECK CMD nc -vz localhost "${LINKY_EXPORTER_PORT}" || exit 1 # nosemgrep
 ENTRYPOINT ["/entrypoint.sh"]

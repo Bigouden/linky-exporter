@@ -183,8 +183,8 @@ LINKY_FRAME = [
 ]
 
 LINKY_MODE = [
-    {"name": "HISTORIQUE", "baudrate": "1200"},
-    {"name": "STANDARD", "baudrate": "9600"},
+    {"name": "HISTORIQUE", "baudrate": 1200},
+    {"name": "STANDARD", "baudrate": 9600},
 ]
 
 try:
@@ -202,7 +202,7 @@ except ValueError:
 LINKY_EXPORTER_MODE = os.environ.get("LINKY_EXPORTER_MODE", "HISTORIQUE")
 VALID_MODE = [i["name"] for i in LINKY_MODE]
 if LINKY_EXPORTER_MODE not in VALID_MODE:
-    logging.error("LINKY_EXPORTER_MODE must be : %s", " or ".join(VALID_MODE))
+    logging.error("LINKY_EXPORTER_MODE must be : %s", " or ".join(map(str, VALID_MODE)))
     os._exit(1)
 
 # REGISTRY Configuration
@@ -324,7 +324,7 @@ class LinkyCollector:
                 ):
                     # Return Serial
                     return ser
-        except serial.serialutil.SerialException:
+        except serial.SerialException:
             logging.error("Unable to read %s.", LINKY_EXPORTER_INTERFACE)
             os._exit(1)
 
